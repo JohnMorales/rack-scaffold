@@ -25,7 +25,7 @@ module Rack::Scaffold::Adapters
 
     def initialize(entity, options = {})
       klass = Class.new(::Sequel::Model)
-      klass.dataset = entity.name.downcase.pluralize.to_sym
+      klass.dataset = entity.name.underscore.pluralize.to_sym
 
       klass.class_eval do
         alias :update! :update
