@@ -122,9 +122,9 @@ module Rack::Scaffold::Adapters
     def establish_associations!(entity)
       klass.class_eval do
         entity.relationships.each do |relationship|
-          options = {:class => CoreData.const_get(relationship.destination.camelize)}
+          class_name = relationship.destination.camelize
+          options = {:class => CoreData.const_get(class_name), :class_name => class_name}
 
-          options = {}
           if relationship.to_many?
             one_to_many relationship.name.to_sym, options
           else
