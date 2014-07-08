@@ -82,4 +82,18 @@ describe Rack::Scaffold::Adapters::CoreData do
       expect(last_response.body).to eq expected.to_json
     end
   end
+
+  describe 'get one to many relations' do 
+    it 'should return one to many relations' do
+      post '/artists', get_artist_attributes
+      artist = @adapter::Artist.first
+      post '/songs', { title: "Black Trombone", artist_id: artist.id }
+      song = @adapter::Song.first
+      expected = { :song => song }
+      expect(last_response.body).to eq expected.to_json
+      get "/artists/#{artist.id}/songs"
+      expected = { :songs => [ song ] }
+      expect(last_response.body).to eq expected.to_json
+    end
+  end
 end
