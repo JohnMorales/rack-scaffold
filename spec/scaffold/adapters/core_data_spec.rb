@@ -63,7 +63,14 @@ describe Rack::Scaffold::Adapters::CoreData do
 
     it 'should return an artist list' do
       post '/artists', get_artist_attributes
-      get '/artists', "ACCEPT" => "application/json"
+      get '/artists'
+      expected = { :artists => @adapter::Artist.all }
+      expect(last_response.body).to eq(expected.to_json)
+    end
+    
+    it 'should return an artist list when there is a trailing slash' do
+      post '/artists', get_artist_attributes
+      get '/artists/'
       expected = { :artists => @adapter::Artist.all }
       expect(last_response.body).to eq(expected.to_json)
     end
