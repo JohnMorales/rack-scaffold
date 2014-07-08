@@ -9,12 +9,15 @@ require "sqlite3"
 require "sequel"
 require "core_data"
 require "rack/scaffold"
+require "pry"
+require "pry-byebug"
 
 require "database_cleaner"
 
 # Setup an in-memory database
 DB = Sequel.sqlite
 
+ENV["RACK_ENV"] = 'test'
 RSpec.configure do |config|
   config.mock_with :rspec
   config.include Rack::Test::Methods

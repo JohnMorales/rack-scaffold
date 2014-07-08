@@ -29,6 +29,9 @@ module Rack
         end
 
         disable :raise_errors, :show_exceptions
+        if ENV["RACK_ENV"] == "test"
+          set :raise_errors, true 
+        end
 
         def last_modified_time(resource, resources)
           update_timestamp_field = resource.update_timestamp_field.to_sym
@@ -73,7 +76,7 @@ module Rack
           @@connections = Hash.new([])
 
           route :get, :subscribe, "/#{resource.plural}/?" do
-            pass unless request.accept? 'text/event-stream'
+            pass unless request.accept.include? 'text/event-stream'
 
             content_type 'text/event-stream'
 
@@ -101,7 +104,7 @@ module Rack
         end if @actions.include?(:create)
 
         @app.instance_eval do
-          get "/#{resource.plural}/?" do
+          get "/#{resource.plural}" do
             if params[:page] or params[:per_page]
               param :page, Integer, default: 1, min: 1
               param :per_page, Integer, default: 100, in: (1..100)
