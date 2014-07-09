@@ -145,7 +145,18 @@ module Rack
                 "#{association}" => associations
               }.to_json
             end
-          end          
+          end
+
+          resource.many_to_one_associations.each do |association|
+            get "/#{resource.plural}/:id/#{association}/?" do
+              record = resource[params[:id]] or halt 404
+              associations = record.send(association)
+
+              {
+                "#{association}" => associations
+              }.to_json
+            end
+          end
         end if @actions.include?(:read)
 
         @app.instance_eval do

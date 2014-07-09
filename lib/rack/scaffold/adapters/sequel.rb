@@ -36,6 +36,10 @@ module Rack::Scaffold::Adapters
       @klass.all_association_reflections.select{|association| association[:type] == :one_to_many}.collect{|association| association[:name]}
     end
 
+    def many_to_one_associations
+      @klass.all_association_reflections.select{|association| association[:type] == :many_to_one}.collect{|association| association[:name]}
+    end
+
     def timestamps?
       defined?(::Sequel::Plugins::Timestamps) and @klass.plugins.include?(::Sequel::Plugins::Timestamps)
     end

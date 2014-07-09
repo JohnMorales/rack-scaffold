@@ -12,11 +12,9 @@ module Rack::Scaffold::Adapters
 
       def resources(xcdatamodel, options = {})
         model = ::CoreData::DataModel.new(xcdatamodel)
-        resources = model.entities.collect{|entity| resource = new(entity, options)}
-        model.entities.each do |entity|
-          resources.each do |resource|
-            resource.establish_associations!(entity)
-          end
+        resources = model.entities.collect{|entity| new(entity, options)}
+        model.entities.each_with_index do |entity, i|
+          resources[i].establish_associations!(entity)
         end
 
         return resources
@@ -116,7 +114,8 @@ module Rack::Scaffold::Adapters
         end
       end
 
-      super(CoreData.const_set(entity.name, klass))
+      klass_const = CoreData.const_defined?(entity.name, false) ? CoreData.const_get(entity.name) : CoreData.const_set(entity.name, klass)
+      super(klass_const)
     end
 
     def establish_associations!(entity)
